@@ -13,6 +13,9 @@
         state: latest
       notify: epel
 
+    - debug:
+        msg: "{{ MSG }}"
+
   handlers:
     - name: vim
       debug:
