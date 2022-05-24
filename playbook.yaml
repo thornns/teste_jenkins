@@ -1,0 +1,24 @@
+---
+-
+  hosts: teste
+  tasks:
+    - name: First Task
+      package:
+        name: vim
+        state: latest
+      notify: vim
+    - name: Second Task
+      package:
+        name: epel-release
+        state: latest
+      notify: epel
+
+  handlers:
+    - name: vim
+      debug:
+        msg: "VIM instalado"
+
+    - name: epel
+      debug:
+        msg: "EPEL instalado"
+...
