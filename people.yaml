@@ -1,6 +1,6 @@
 ---
 -
-  hosts: all
+  hosts: web1
   vars:
   tasks:
     - name: Transferir o template para o nginx
