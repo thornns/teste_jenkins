@@ -1,0 +1,10 @@
+---
+-
+  hosts: web1
+  vars:
+  tasks:
+    - name: Transferir o template para o nginx
+      template:
+        src: table.js
+        dest: /var/www/html/index.php
+...
