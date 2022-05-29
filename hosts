@@ -11,3 +11,4 @@ ansible_become_method=su
 
 [teste]
 teste1 ansible_host=CentOS7_SSHD
+web1 ansible_host=nginx_php
