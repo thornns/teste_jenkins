@@ -10,6 +10,7 @@ services:
     volumes:
       - "$PWD/jenkins-data/jenkins_home:/var/jenkins_home"
       - "$PWD/centos7/remote-key:/tmp/remote-key"
+      - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       - jenkins_net
     restart: unless-stopped
