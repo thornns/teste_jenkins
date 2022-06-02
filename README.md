@@ -1,2 +1,3 @@
-# teste_jenkins
-# teste_jenkins
+# Jenkins
+## Miscelânea de arquivos utilizados no meu aprendizado de Jenkins
+### Dockerfiles, Docker Compose, Pipelines, DSL, Exemplos...
