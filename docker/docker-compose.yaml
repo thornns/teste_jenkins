@@ -1,0 +1,70 @@
+version: '3'
+services:
+  jenkins:
+    container_name: JenkinsServerAnsible
+    image: jenkins-docker-ansible
+    build:
+      context: ./jenkins-docker
+    ports:
+      - "8080:8080"
+    volumes:
+      - "$PWD/jenkins-data/jenkins_home:/var/jenkins_home"
+      - "$PWD/centos7/remote-key:/tmp/remote-key"
+    networks:
+      - jenkins_net
+    restart: unless-stopped
+
+  remote_host:
+    container_name: CentOS7_SSHD
+    image: ssh_centos
+    build:
+      context: ./centos7
+    networks:
+      - jenkins_net
+    restart: unless-stopped
+
+  mysqsl:
+    container_name: MySQL_AWS
+    image: mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=1234"
+    volumes:
+      - "$PWD/mysql/data:/var/lib/mysql" 
+    networks:
+      - jenkins_net
+    restart: unless-stopped
+
+  nginx-php:
+    container_name: nginx_php
+    image: nginx-php
+    build:
+      context: ./webserver
+    ports:
+      - "8090:80"
+    networks:
+      - jenkins_net
+    restart: unless-stopped
+
+  gitlab:
+    container_name: gitlab
+    #/etc/gitlab/initial_root_password
+    image: 'gitlab/gitlab-ce:latest'
+    restart: unless-stopped
+    hostname: 'gitlab.local.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://gitlab.local.com'
+    ports:
+      - '8100:80'
+      - '4430:443'
+      - '2222:22'
+    volumes:
+      - '$PWD/gitlab/config:/etc/gitlab'
+      - '$PWD/gitlab/logs:/var/log/gitlab'
+      - '$PWD/gitlab/data:/var/opt/gitlab'
+    shm_size: '256m'
+    networks:
+      - jenkins_net
+
+networks:
+ jenkins_net:
