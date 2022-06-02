@@ -1,0 +1,55 @@
+# https://jenkinsci.github.io/job-dsl-plugin/
+# Os scripts precisam ser APROVADOS antes da execução ser possível: Manage Jenkins > In-process Script Approval
+job('job-name'){
+	description('Descrição do funcionamento do job')
+	parameters {
+		stringParam('Parametro de String', defaultvalue = 'String', description = 'Parametização de String via DSL')
+		booleanParam('Parametro Booleano', true)
+		choiceParam('Parametro de Escolha', ['opção 1', 'opção 2 (default)', 'opção 3'])
+	}
+
+	scm {
+		git('https://github.com/thornns/teste_jenkins', branch = 'main', {node -> node / 'extensions' << '' })
+	}
+	triggers {
+		cron('H 5 * * 7')
+	}
+	steps {
+		shell(
+		"""
+		echo 'Hello World'
+		echo 'Multiline Step'
+		""")
+	}
+	publishers {
+		mailer('danielsantarita@gmail.com', true, true) # 'true' se referem a: dontNotifyEveryUnstableBuild e sendToIndividuals
+	}
+	
+}
+
+# Recriar o job de ansible usando DSL
+# https://github.com/jenkinsci/ansible-plugin
+
+job('ansible-job-nginx-dsl'){
+	parameters {
+		choiceParam('AGE', ['20', '21 (default)', '22', '23', '24', '25'])
+	}
+	scm {
+		git('https://github.com/thornns/teste_jenkins.git', branch = 'main', {node -> node / 'extensions' << '' })
+	}
+	steps {
+		wrappers {
+			colorizeOutput(colorMap = 'xterm')
+		}
+		ansiblePlaybook('people.yaml') {
+			inventoryPath('hosts')
+			colorizedOutput(true)
+			extraVars {
+				extraVar('PEOPLE_AGE', '${AGE}', false)
+			}
+		}
+	}
+	publishers {
+		mailer('danielsantarita@gmail.com', true, true)
+	}
+}
